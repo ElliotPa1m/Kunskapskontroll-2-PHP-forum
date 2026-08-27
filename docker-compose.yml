@@ -5,14 +5,19 @@ services:
       - "8080:80"
     volumes:
       - ./src:/var/www/html
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
     depends_on:
       - db
 
   db:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: forum
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3306:3306"
     volumes:
@@ -21,11 +26,11 @@ services:
   phpmyadmin:
     image: phpmyadmin
     environment:
-      PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: root
+      PMA_HOST: ${DB_HOST}
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASS}
     ports:
-    - "8081:80"
+      - "8081:80"
     depends_on:
       - db
 volumes:
