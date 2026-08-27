@@ -1,8 +1,8 @@
 <?php
-$host = 'db';
-$dbname = 'forum';
-$username = 'root';
-$password = 'root';
+$host = getenv('DB_HOST');
+$dbname = getenv('DB_NAME');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASS');
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
