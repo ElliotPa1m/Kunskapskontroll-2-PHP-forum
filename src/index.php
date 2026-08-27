@@ -1,1 +1,4 @@
-<?php echo "hej!"; ?>
+<?php 
+require 'includes/db.php';
+
+?>
