@@ -1,0 +1,4 @@
+<FilesMatch "^\.(htaccess|env)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
