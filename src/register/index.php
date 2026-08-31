@@ -1,5 +1,5 @@
 <?php
-require 'includes/db.php';
+require '../includes/db.php';
 
 $errors = [];
 
@@ -33,12 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO Users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)");
         $stmt->execute([$first_name, $last_name, $email, $password_hash]);
 
-        header("Location: login.php");
+        header("Location: ../login/");
         exit;
     }
 }
-
-require 'includes/header.php';
 ?>
 
 <h1>Create account</h1>
@@ -51,7 +49,10 @@ require 'includes/header.php';
     </ul>
 <?php endif; ?>
 
-<form method="POST" action="register.php">
+<a href="../">Home</a>
+<a href="../login/">Already have an account? Log in!</a>
+
+<form method="POST" action="">
     <label for="first_name">First name:</label>
     <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($first_name ?? '') ?>" required>
 

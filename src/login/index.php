@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'includes/db.php';
+require '../includes/db.php';
 
 $errors = [];
 
@@ -28,12 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id'] = $user['UniqueID'];
         $_SESSION['first_name'] = $user['first_name'];
 
-        header("Location: index.php");
+        header("Location: ../");
         exit;
     }
 }
-
-require 'includes/header.php';
 ?>
 
 <h1>Log in</h1>
@@ -46,7 +44,10 @@ require 'includes/header.php';
     </ul>
 <?php endif; ?>
 
-<form method="POST" action="login.php">
+<a href="../">Home</a>
+<a href="../register/">Don't have an account? Create one here!</a>
+
+<form method="POST" action="">
     <label for="email">E-mail:</label>
     <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
 
