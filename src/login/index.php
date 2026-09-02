@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require '../includes/db.php';
 
+$invite_token = $_GET['token'] ?? $_POST['token'] ?? null;
+
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -28,7 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id'] = $user['UniqueID'];
         $_SESSION['first_name'] = $user['first_name'];
 
-        header("Location: ../");
+        if ($invite_token) {
+            header("Location: ../join/?token=" . urlencode($invite_token));
+        } else {
+            header("Location: ../");
+        }
         exit;
     }
 }
@@ -48,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <a href="../register/">Don't have an account? Create one here!</a>
 
 <form method="POST" action="">
+    <input type="hidden" name="token" value="<?= htmlspecialchars($invite_token ?? '') ?>">
     <label for="email">E-mail:</label>
     <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
 

@@ -1,6 +1,8 @@
 <?php
 require '../includes/db.php';
 
+$invite_token = $_GET['token'] ?? $_POST['token'] ?? null;
+
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -33,7 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO Users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)");
         $stmt->execute([$first_name, $last_name, $email, $password_hash]);
 
-        header("Location: ../login/");
+        if ($invite_token) {
+            header("Location: ../login/?token=" . urlencode($invite_token));
+        } else {
+            header("Location: ../login/");
+        }
         exit;
     }
 }
@@ -53,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <a href="../login/">Already have an account? Log in!</a>
 
 <form method="POST" action="">
+    <input type="hidden" name="token" value="<?= htmlspecialchars($invite_token ?? '') ?>">
     <label for="first_name">First name:</label>
     <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($first_name ?? '') ?>" required>
 
