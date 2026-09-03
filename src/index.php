@@ -19,13 +19,14 @@ if (isset($_SESSION['user_id'])) {
     $my_groups = $stmt->fetchAll();
 
     $stmt = $pdo->prepare("
-        SELECT UniqueID, name
+        SELECT UniqueID, name,
+            (SELECT status FROM JoinRequests WHERE user_id = ? AND group_id = Groups_table.UniqueID AND status = 'pending') AS pending_status
         FROM Groups_table
         WHERE UniqueID NOT IN (
             SELECT group_id FROM Membership WHERE user_id = ?
         )
     ");
-    $stmt->execute([$user_id]);
+    $stmt->execute([$user_id, $user_id]);
     $other_groups = $stmt->fetchAll();
 } else {
     $stmt = $pdo->query("SELECT UniqueID, name FROM Groups_table");
@@ -83,10 +84,14 @@ require 'includes/header.php';
                     <?= htmlspecialchars($group['name']) ?>
                 </a>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <form method="POST" action="/group/apply.php" style="display:inline;">
-                        <input type="hidden" name="group_id" value="<?= $group['UniqueID'] ?>">
-                        <button type="submit">Apply to join</button>
-                    </form>
+                    <?php if ($group['pending_status'] === 'pending'): ?>
+                        <span>Application pending</span>
+                    <?php else: ?>
+                        <form method="POST" action="/group/apply.php" style="display:inline;">
+                            <input type="hidden" name="group_id" value="<?= $group['UniqueID'] ?>">
+                            <button type="submit">Apply to join</button>
+                        </form>
+                    <?php endif; ?>
                 <?php endif; ?>
             </li>
         <?php endforeach; ?>
