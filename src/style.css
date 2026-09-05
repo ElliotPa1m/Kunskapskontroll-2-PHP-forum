@@ -1,0 +1,225 @@
+:root {
+    --bg: #acc7b4;
+    --card: #f9ebde;
+    --accent: #331b3f;
+    --text: #2b2b2b;
+    --accent-text: #f9ebde;
+    --error: #8c3b3b;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 1.5em 2em;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent);
+    margin-top: 0;
+}
+
+button, input[type="submit"] {
+    background-color: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    padding: 0.8em 1.0em;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    /* font-size: 1em; */
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.card {
+    background-color: var(--card);
+    border-radius: 10px;
+    padding: 0.8em 1.5em;
+    margin-bottom: 1em;
+    max-width: 700px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(51, 27, 63, 0.2);
+}
+
+.card p {
+    margin: 0;
+}
+
+.original-post, .reply {
+    position: relative;
+    padding-left: 1.8em;
+}
+
+.original-post::before, .reply::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    border-radius: 10px 0 0 10px;
+}
+
+.original-post::before {
+    background-color: var(--accent);
+}
+
+.reply::before{
+    background-color: #7a5a86;
+}
+
+.discussion-card {
+    background-color: var(--card);
+    border-left: 10px solid var(--accent);
+    border-radius: 6px;
+    padding: 0.8em 1.2em;
+    margin-bottom: 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    list-style: none;
+}
+
+.discussion-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(51, 27, 63, 0.2);
+}
+
+.discussion-card a {
+    display: block;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.discussion-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.section {
+    margin-top: 2.5em;
+    padding-top: 1.5em;
+    border-top: 2px solid var(--accent);
+}
+
+textarea, input[type="text"], input[type="email"], input[type="password"] {
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    padding: 0.6em 0.8em;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    background-color: var(--card);
+    color: var(--text);
+}
+
+textarea {
+    width: 100%;
+    max-width: 500px;
+    min-height: 100px;
+    resize: vertical;
+}
+
+textarea:focus, input:focus {
+    outline: none;
+    border-color: #7a5a86;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.group-list li {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 0.5em;
+    width: 220px;
+    min-height: 1.5em;
+}
+
+.group-list li > form, .group-list li > span {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-left: 1em;
+    border-left: 2px solid var(--accent)
+}
+
+.group-list li > a {
+    line-height: 1;
+}
+
+form {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5em 1em;
+}
+
+form label {
+    display: flex;
+    align-items: center;
+}
+
+.inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em 1em;
+}
+
+.inline-form label {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8em 1.5em;
+    background-color: var(--card);
+    border-radius: 10px;
+    margin-bottom: 1.5em;
+}
+
+.site-header .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
