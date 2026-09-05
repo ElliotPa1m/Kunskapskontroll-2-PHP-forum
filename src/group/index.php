@@ -123,9 +123,9 @@ $discussions = $stmt->fetchAll();
 <?php if (empty($discussions)): ?>
     <p>No discussions yet.</p>
 <?php else: ?>
-    <ul>
+    <ul class="discussion-list">
         <?php foreach ($discussions as $discussion): ?>
-            <li>
+            <li class="discussion-card">
                 <?php if ($role !== null): ?>
                     <a href="/discussion/?id=<?= $discussion['UniqueID'] ?>">
                         <?= htmlspecialchars($discussion['topic']) ?>
@@ -139,106 +139,114 @@ $discussions = $stmt->fetchAll();
 <?php endif; ?>
 
 <?php if ($role !== null): ?>
-    <h2>Start a new discussion</h2>
+    <section class="section">
+        <h2>Start a new discussion</h2>
 
-    <?php if (!empty($errors)): ?>
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
+        <?php if (!empty($errors)): ?>
+            <ul>
+                <?php foreach ($errors as $error): ?>
+                    <li><?= htmlspecialchars($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
 
-    <form method="POST" action="">
-        <label for="topic">Topic:</label>
-        <input type="text" id="topic" name="topic" value="<?= htmlspecialchars($topic ?? '') ?>" required>
+        <form class="inline-form" method="POST" action="">
+            <label for="topic">Topic:</label>
+            <input type="text" id="topic" name="topic" value="<?= htmlspecialchars($topic ?? '') ?>" required>
 
-        <label for="content">Message:</label>
-        <textarea id="content" name="content" required><?= htmlspecialchars($content ?? '') ?></textarea>
+            <label for="content">Message:</label>
+            <textarea id="content" name="content" required><?= htmlspecialchars($content ?? '') ?></textarea>
 
-        <button type="submit"> Start discussion</button>
-    </form>
+            <button type="submit"> Start discussion</button>
+        </form>
+    </section>
 <?php endif; ?>
 
 <?php if ($role === 'admin'): ?>
-    <h2>Pending join requests</h2>
+    <section class="section">
+        <h2>Pending join requests</h2>
 
-    <?php
-    $stmt = $pdo->prepare("
-        SELECT jr.UniqueID, u.first_name, u.last_name
-        FROM JoinRequests jr
-        JOIN Users u ON jr.user_id = u.UniqueID
-        WHERE jr.group_id = ? AND jr.status = 'pending'
-    ");
-    $stmt->execute([$group_id]);
-    $pending_requests = $stmt->fetchAll();
-    ?>
+        <?php
+        $stmt = $pdo->prepare("
+            SELECT jr.UniqueID, u.first_name, u.last_name
+            FROM JoinRequests jr
+            JOIN Users u ON jr.user_id = u.UniqueID
+            WHERE jr.group_id = ? AND jr.status = 'pending'
+        ");
+        $stmt->execute([$group_id]);
+        $pending_requests = $stmt->fetchAll();
+        ?>
 
-    <?php if (empty($pending_requests)): ?>
-        <p>No pending requests.</p>
-    <?php else: ?>
+        <?php if (empty($pending_requests)): ?>
+            <p>No pending requests.</p>
+        <?php else: ?>
+            <ul>
+                <?php foreach ($pending_requests as $request): ?>
+                    <li>
+                        <?= htmlspecialchars($request['first_name'] . ' ' . $request['last_name']) ?>
+                        <form method="POST" action="" style="display:inline;">
+                            <input type="hidden" name="request_id" value="<?= $request['UniqueID'] ?>">
+                            <button type="submit" name="action" value="approve_request">Approve</button>
+                            <button type="submit" name="action" value="deny_request">Deny</button>
+                        </form>
+                    </li>    
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </section>
+<?php endif; ?>
+
+<?php if ($role === 'admin'): ?>
+    <section class="section">
+        <h2>Members</h2>
+
+        <?php
+        $stmt = $pdo->prepare("
+            SELECT u.UniqueID, u.first_name, u.last_name, m.role
+            FROM Membership m
+            JOIN Users u ON m.user_id = u.UniqueID
+            WHERE m.group_id = ?
+        ");
+        $stmt->execute([$group_id]);
+        $members = $stmt->fetchAll();
+        ?>
+
         <ul>
-            <?php foreach ($pending_requests as $request): ?>
+            <?php foreach ($members as $member): ?>
                 <li>
-                    <?= htmlspecialchars($request['first_name'] . ' ' . $request['last_name']) ?>
-                    <form method="POST" action="" style="display:inline;">
-                        <input type="hidden" name="request_id" value="<?= $request['UniqueID'] ?>">
-                        <button type="submit" name="action" value="approve_request">Approve</button>
-                        <button type="submit" name="action" value="deny_request">Deny</button>
-                    </form>
-                </li>    
+                    <?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>
+                    (<?= htmlspecialchars($member['role']) ?>)
+
+                    <?php if ($member['UniqueID'] != $_SESSION['user_id']): ?>
+                        <form method="POST" action="" style="display:inline;">
+                            <input type="hidden" name="action" value="change_role">
+                            <input type="hidden" name="user_id" value="<?= $member['UniqueID'] ?>">
+
+                            <?php if ($member['role'] === 'member'): ?>
+                                <button type="submit" name="new_role" value="admin">Make admin</button>
+                            <?php else: ?>
+                                <button type="submit" name="new_role" value="member">Remove admin</button>
+                            <?php endif; ?>
+                        </form>
+                    <?php endif; ?>
+                </li>
             <?php endforeach; ?>
         </ul>
-    <?php endif; ?>
+    </section>
 <?php endif; ?>
 
 <?php if ($role === 'admin'): ?>
-    <h2>Members</h2>
+    <section class="section">
+        <h2>Invite link</h2>
 
-    <?php
-    $stmt = $pdo->prepare("
-        SELECT u.UniqueID, u.first_name, u.last_name, m.role
-        FROM Membership m
-        JOIN Users u ON m.user_id = u.UniqueID
-        WHERE m.group_id = ?
-    ");
-    $stmt->execute([$group_id]);
-    $members = $stmt->fetchAll();
-    ?>
+        <?php if ($new_invite_link): ?>
+            <p>New invite link (valid for 24 hours, one-time use):</p>
+            <p><code><?= htmlspecialchars($new_invite_link) ?></code></p>
+        <?php endif; ?>
 
-    <ul>
-        <?php foreach ($members as $member): ?>
-            <li>
-                <?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>
-                (<?= htmlspecialchars($member['role']) ?>)
-
-                <?php if ($member['UniqueID'] != $_SESSION['user_id']): ?>
-                    <form method="POST" action="" style="display:inline;">
-                        <input type="hidden" name="action" value="change_role">
-                        <input type="hidden" name="user_id" value="<?= $member['UniqueID'] ?>">
-
-                        <?php if ($member['role'] === 'member'): ?>
-                            <button type="submit" name="new_role" value="admin">Make admin</button>
-                        <?php else: ?>
-                            <button type="submit" name="new_role" value="member">Remove admin</button>
-                        <?php endif; ?>
-                    </form>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
-
-<?php if ($role === 'admin'): ?>
-    <h2>Invite link</h2>
-
-    <?php if ($new_invite_link): ?>
-        <p>New invite link (valid for 24 hours, one-time use):</p>
-        <p><code><?= htmlspecialchars($new_invite_link) ?></code></p>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <input type="hidden" name="action" value="create_invite">
-        <button type="submit">Create new invite link</button>
-    </form>
+        <form method="POST" action="">
+            <input type="hidden" name="action" value="create_invite">
+            <button type="submit">Create new invite link</button>
+        </form>
+    </section>
 <?php endif; ?>

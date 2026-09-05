@@ -60,8 +60,12 @@ $posts = $stmt->fetchAll();
 ?>
 
 <div>
-    <?php foreach ($posts as $post): ?>
-        <div>
+    <?php foreach ($posts as $index => $post): ?>
+        <?php if ($index === 1): ?>
+            <h2>Comments</h2>
+        <?php endif; ?>
+
+        <div class="card <?= $index === 0 ? 'original-post' : 'reply' ?>">
             <strong><?= htmlspecialchars($post['first_name'] . ' ' . $post['last_name']) ?></strong>
             <span><?= htmlspecialchars($post['created_at']) ?></span>
             <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>

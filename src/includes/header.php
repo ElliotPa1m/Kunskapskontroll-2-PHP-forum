@@ -4,14 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 ?>
 
-<nav>
-    <a href="/">Home</a>
+<link rel="stylesheet" href="/style.css">
 
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <span><?= htmlspecialchars($_SESSION['first_name']) ?></span>
-        <a href="/logout/">Log out</a>
-    <?php else: ?>
-        <a href="/login/">Log in</a>
-        <a href="/register/">Create account</a>
-    <?php endif; ?>
-</nav>
+<header class="site-header">
+    <a href="/" class="logo">HiveMind</a>
+    <div class="header-right">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <span><?= htmlspecialchars($_SESSION['first_name']) ?></span>
+            <a href="/logout/">Log out</a>
+        <?php else: ?>
+            <a href="/login/">Log in</a>
+            <a href="/register/">Create account</a>
+        <?php endif; ?>
+    </div>
+</header>

@@ -61,7 +61,7 @@ require 'includes/header.php';
     <?php if (empty($my_groups)): ?>
         <p>You're not a member of any group yet. </p>
     <?php else: ?>
-        <ul>
+        <ul class="group-list">
             <?php foreach ($my_groups as $group): ?>
                 <li>
                     <a href="/group/?id=<?= $group['UniqueID'] ?>">
@@ -77,7 +77,7 @@ require 'includes/header.php';
 <?php if (empty($other_groups)): ?>
     <p>No other groups right now. </p>
 <?php else: ?>
-    <ul>
+    <ul class="group-list">
         <?php foreach ($other_groups as $group): ?>
             <li>
                 <a href="/group/?id=<?= $group['UniqueID'] ?>">
@@ -101,7 +101,7 @@ require 'includes/header.php';
 <?php if (isset($_SESSION['user_id'])): ?>
     <h2>Create a new group</h2>
 
-    <form method="POST" action="">
+    <form class="inline-form" method="POST" action="">
         <label for="group_name">Group name:</label>
         <input type="text" id="group_name" name="group_name" required>
         <button type="submit"> Create group</button>

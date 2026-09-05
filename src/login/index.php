@@ -40,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+<link rel="stylesheet" href="/style.css">
+
 <h1>Log in</h1>
 
 <?php if (!empty($errors)): ?>
@@ -53,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <a href="../">Home</a>
 <a href="../register/">Don't have an account? Create one here!</a>
 
-<form method="POST" action="">
+<form class="inline-form" method="POST" action="">
     <input type="hidden" name="token" value="<?= htmlspecialchars($invite_token ?? '') ?>">
     <label for="email">E-mail:</label>
     <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
